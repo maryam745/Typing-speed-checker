@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Typing Speed Test</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⌨️ Typing Speed Test</h1>
+      <button id="toggleTheme" aria-label="Toggle dark mode">🌙</button>
+    </div>
+
+    <div class="settings">
+      <label>Difficulty:
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label>Mode:
+        <select id="mode">
+          <option value="free" selected>Free</option>
+          <option value="30">30s</option>
+          <option value="60">60s</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="quote" class="quote-box">Loading...</div>
+    <textarea id="input" placeholder="Start typing here..."></textarea>
+
+    <div class="stats">
+      <div><strong>⏱ Time:</strong> <span id="time">0</span>s</div>
+      <div><strong>⚡ WPM:</strong> <span id="wpm">0</span></div>
+      <div><strong>✅ Accuracy:</strong> <span id="accuracy">0</span>%</div>
+    </div>
+
+    <button onclick="restartTest()">🔁 Restart Test</button>
+    <button onclick="showLeaderboard()">🏆 View Leaderboard</button>
+  </div>
+
+  <div class="modal" id="summaryModal">
+    <div class="modal-content">
+      <h2 id="summaryTitle">Test Summary</h2>
+      <div id="summaryContent">
+        <p>WPM: <span id="sumWpm"></span></p>
+        <p>Accuracy: <span id="sumAccuracy"></span>%</p>
+        <p>Time Taken: <span id="sumTime"></span>s</p>
+      </div>
+      <div id="leaderboard" style="display:none;">
+        <h2>🏆 Top 5 Scores</h2>
+        <ul id="leaderboardList"></ul>
+      </div>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- <footer>
+    <p>Made by Maryam Nazar</p>
+  </footer> -->
+
+  <script src="script.js"></script>
+</body>
+</html>
