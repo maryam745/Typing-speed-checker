@@ -11,28 +11,31 @@
   <div class="container">
     <div class="header">
       <h1>⌨️ Typing Speed Test</h1>
-      <button id="toggleTheme" aria-label="Toggle dark mode">🌙</button>
     </div>
 
     <div class="settings">
       <label>Difficulty:
-        <select id="difficulty">
-          <option value="easy">Easy</option>
-          <option value="medium" selected>Medium</option>
-          <option value="hard">Hard</option>
-        </select>
+        <div class="tooltip">
+          <select id="difficultySelect">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
       </label>
       <label>Mode:
-        <select id="mode">
-          <option value="free" selected>Free</option>
-          <option value="30">30s</option>
-          <option value="60">60s</option>
-        </select>
+        <div class="tooltip">
+          <select id="modeSelect">
+            <option value="free">Free</option>
+            <option value="30">30s</option>
+            <option value="60">60s</option>
+          </select>
+        </div>
       </label>
     </div>
-
+    <div id="countdown" class="countdown"></div>
     <div id="quote" class="quote-box">Loading...</div>
-    <textarea id="input" placeholder="Start typing here..."></textarea>
+    <textarea id="input" placeholder="Start typing here..." disabled></textarea>
 
     <div class="stats">
       <div><strong>⏱ Time:</strong> <span id="time">0</span>s</div>
@@ -44,14 +47,28 @@
     <button onclick="showLeaderboard()">🏆 View Leaderboard</button>
   </div>
 
+  <!-- Welcome Modal -->
+  <div    class="modal show" id="welcomeModal">
+    <div class="modal-content">
+      <h2>Welcome to Typing Speed Test</h2>
+      <p>This test helps improve your typing speed and accuracy.</p>
+      <ul style="text-align:left;">
+        <li>🎯 Choose difficulty and time mode</li>
+        <li>⌨️ Type the highlighted quote</li>
+        <li>🏁 Countdown starts before test</li>
+        <li>📈 See WPM, Accuracy & Time</li>
+      </ul>
+      <button onclick="closeWelcome()">Start Typing Test</button>
+    </div>
+  </div>
+
+  <!-- Summary Modal -->
   <div class="modal" id="summaryModal">
     <div class="modal-content">
-      <h2 id="summaryTitle">Test Summary</h2>
-      <div id="summaryContent">
-        <p>WPM: <span id="sumWpm"></span></p>
-        <p>Accuracy: <span id="sumAccuracy"></span>%</p>
-        <p>Time Taken: <span id="sumTime"></span>s</p>
-      </div>
+      <h2>📊 Test Summary</h2>
+      <p>WPM: <span id="sumWpm"></span></p>
+      <p>Accuracy: <span id="sumAccuracy"></span>%</p>
+      <p>Time Taken: <span id="sumTime"></span>s</p>
       <div id="leaderboard" style="display:none;">
         <h2>🏆 Top 5 Scores</h2>
         <ul id="leaderboardList"></ul>
@@ -60,9 +77,8 @@
     </div>
   </div>
 
-  <!-- <footer>
-    <p>Made by Maryam Nazar</p>
-  </footer> -->
+  <audio id="keypressSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_79c578e5a1.mp3?filename=click-124467.mp3"></audio>
+  <audio id="finishSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_f95be66c38.mp3?filename=success-1-6297.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
