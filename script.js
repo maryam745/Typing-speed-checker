@@ -1,160 +1,203 @@
 const quotes = {
   easy: [
-    "Hello world.",
-    "Typing is fun.",
-    "Cats are cute.",
-    "Practice makes perfect.",
-    "Stay positive and happy.",
-    "Be the best version of yourself."
+    "Typing is fun and easy to learn.\nPractice daily to improve your speed.",
+    "Short sentences help build skill.\nKeep your hands on the keyboard.",
+    "Try to focus and avoid mistakes.\nThis is a simple typing test.",
+    "Work hard and type fast.\nEasy level is good for beginners.",
+    "Two lines make it easier to type.\nBuild confidence with small steps.",
+    "Simple quotes are great to start.\nEnjoy typing without pressure.",
+    "Stay calm and type slowly.\nSpeed will come with practice.",
+    "Always type what you see.\nDon’t guess or skip words."
   ],
   medium: [
-    "The quick brown fox jumps over the lazy dog.",
-    "Typing fast helps improve your productivity.",
-    "Coding is both fun and challenging.",
-    "Success doesn't come from what you do occasionally, it comes from what you do consistently.",
-    "Learning never exhausts the mind, but fuels creativity and growth.",
-    "Discipline is the bridge between goals and accomplishment."
+    "Typing quickly can increase your efficiency.\nKeep practicing every day to get better.",
+    "Improve your focus while typing.\nIt will help you reduce mistakes.",
+    "Use proper hand placement.\nIt improves both speed and accuracy.",
+    "Stay calm and relaxed.\nTension leads to typing errors.",
+    "Keep your eyes on the screen.\nNot on the keyboard while typing.",
+    "Avoid unnecessary backspace.\nIt slows you down.",
+    "Typing with rhythm improves flow.\nUse short breaks wisely.",
+    "Typing skill is built slowly.\nBe patient and consistent."
   ],
   hard: [
-    "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
-    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-    "The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle.",
-    "In the middle of every difficulty lies opportunity, waiting for those who are prepared to seize it.",
-    "Your time is limited, so don't waste it living someone else's life. Have the courage to follow your heart and intuition.",
-    "We are what we repeatedly do. Excellence, then, is not an act, but a habit."
+    "Typing is not just about hitting keys on the keyboard. It's a cognitive skill that develops with practice. To type efficiently, one must learn proper finger placement and build muscle memory. Over time, speed and accuracy naturally improve.",
+    "In a fast-paced digital world, being able to type quickly and accurately can save time and boost productivity. Regular practice and dedication are key to mastering the art of typing. Tools like this test help track your progress.",
+    "Most people think typing fast is only about speed. However, accuracy is even more important. Typing without looking at the keyboard is a skill known as touch typing. It's the gold standard for professionals.",
+    "The ability to type effortlessly improves communication, especially in careers like programming, writing, and data entry. It's a foundational digital skill that should be practiced regularly to stay sharp.",
+    "Good posture and wrist alignment are also important when typing. Slouching or typing incorrectly can cause discomfort or long-term injury. Take breaks and stretch your fingers.",
+    "Typing helps build focus and discipline. You learn to concentrate on a task while ignoring distractions. This makes you more productive in other areas as well.",
+    "Learning typing in school can help students write essays faster, complete assignments on time, and take digital exams efficiently.",
+    "Modern typing software includes features like WPM tracking, error analysis, and performance charts. These tools guide learners toward faster, more accurate typing."
   ]
 };
 
 
+const quoteDisplay = document.getElementById("quote");
+const inputBox = document.getElementById("input");
+const timeDisplay = document.getElementById("time");
+const wpmDisplay = document.getElementById("wpm");
+const accuracyDisplay = document.getElementById("accuracy");
+const modeSelect = document.getElementById("modeSelect");
+const difficultySelect = document.getElementById("difficultySelect");
+const countdown = document.getElementById("countdown");
+
+const welcomeModal = document.getElementById("welcomeModal");
+const summaryModal = document.getElementById("summaryModal");
+const leaderboardList = document.getElementById("leaderboardList");
+
+const keypressSound = document.getElementById("keypressSound");
+const finishSound = document.getElementById("finishSound");
+
 let currentQuote = "";
-let timer, startTime;
-let isStarted = false;
-let timeLeft = 0;
+let startTime;
+let timerInterval;
+let isTestRunning = false;
+let typedChars = 0;
 
-const quoteEl = document.getElementById("quote");
-const inputEl = document.getElementById("input");
-const timeEl = document.getElementById("time");
-const wpmEl = document.getElementById("wpm");
-const accuracyEl = document.getElementById("accuracy");
-const difficultyEl = document.getElementById("difficulty");
-const modeEl = document.getElementById("mode");
+function getRandomQuote() {
+  const difficulty = difficultySelect.value;
+  const quoteArr = quotes[difficulty];
+  return quoteArr[Math.floor(Math.random() * quoteArr.length)];
+}
 
-function loadQuote() {
-  const diff = difficultyEl.value;
-  currentQuote = quotes[diff][Math.floor(Math.random() * quotes[diff].length)];
-  quoteEl.innerText = currentQuote;
-  inputEl.value = "";
-  inputEl.disabled = false;
-  resetStats();
-  clearInterval(timer);
-  isStarted = false;
-  if (modeEl.value !== "free") {
-    timeLeft = parseInt(modeEl.value);
-    timeEl.textContent = timeLeft;
+function displayQuote(quote) {
+  quoteDisplay.innerHTML = "";
+  quote.split("").forEach(char => {
+    const span = document.createElement("span");
+    span.innerText = char;
+    quoteDisplay.appendChild(span);
+  });
+}
+
+
+function startTest() {
+  currentQuote = getRandomQuote();
+  displayQuote(currentQuote);
+  inputBox.value = "";
+  typedChars = 0;
+
+  let countdownValue = 3;
+  countdown.textContent = countdownValue;
+
+  const countdownInterval = setInterval(() => {
+    countdownValue--;
+    if (countdownValue > 0) {
+      countdown.textContent = countdownValue;
+    } else if (countdownValue === 0) {
+      countdown.textContent = "Go!";
+    } else {
+      clearInterval(countdownInterval);
+      countdown.textContent = "";
+      startTime = new Date();
+      const mode = modeSelect.value;
+      if (mode !== "free") {
+        const totalTime = parseInt(mode);
+        timerInterval = setInterval(() => updateTime(totalTime), 1000);
+      }
+    }
+  }, 1000);
+}
+
+function updateTime(limit) {
+  const elapsed = Math.floor((new Date() - startTime) / 1000);
+  timeDisplay.textContent = elapsed;
+  const remaining = limit - elapsed;
+  if (remaining <= 0) {
+    finishTest();
   }
 }
 
-function resetStats() {
-  timeEl.textContent = "0";
-  wpmEl.textContent = "0";
-  accuracyEl.textContent = "0";
-}
+function finishTest() {
+  clearInterval(timerInterval);
+  isTestRunning = false;
+  const totalTime = Math.floor((new Date() - startTime) / 1000);
+  const correctChars = quoteDisplay.querySelectorAll(".highlight-green").length;
+  const totalChars = currentQuote.length;
+  const accuracy = Math.round((correctChars / totalChars) * 100);
+  const wpm = Math.round((correctChars / 5) / (totalTime / 60));
 
-inputEl.addEventListener("input", () => {
-  if (!isStarted) {
-    startTime = new Date();
-    isStarted = true;
-    timer = modeEl.value === "free" ? setInterval(updateTime, 1000) : setInterval(countdown, 1000);
-  }
+  wpmDisplay.textContent = wpm;
+  accuracyDisplay.textContent = accuracy;
+  timeDisplay.textContent = totalTime;
 
-  const typedText = inputEl.value;
-  const correct = getCorrectChars(currentQuote, typedText);
-  const accuracy = Math.round((correct / typedText.length) * 100) || 0;
-  accuracyEl.textContent = accuracy;
+  document.getElementById("sumWpm").textContent = wpm;
+  document.getElementById("sumAccuracy").textContent = accuracy;
+  document.getElementById("sumTime").textContent = totalTime;
 
-  const words = typedText.trim().split(/\s+/).filter(Boolean).length;
-  const seconds = Math.max(1, modeEl.value === "free" ? Math.floor((new Date() - startTime) / 1000) : parseInt(modeEl.value) - timeLeft);
-  const wpm = Math.round((words / seconds) * 60) || 0;
-  wpmEl.textContent = wpm;
-
-  if (modeEl.value === "free" && typedText === currentQuote) {
-    clearInterval(timer);
-    showSummary(wpm, accuracy, seconds);
-    saveScore(wpm);
-    inputEl.disabled = true;
-  }
-});
-
-function updateTime() {
-  const seconds = Math.floor((new Date() - startTime) / 1000);
-  timeEl.textContent = seconds;
-}
-
-function countdown() {
-  if (timeLeft > 0) {
-    timeLeft--;
-    timeEl.textContent = timeLeft;
-  } else {
-    clearInterval(timer);
-    const typedText = inputEl.value;
-    const correct = getCorrectChars(currentQuote, typedText);
-    const accuracy = Math.round((correct / typedText.length) * 100) || 0;
-    const words = typedText.trim().split(/\s+/).filter(Boolean).length;
-    const seconds = parseInt(modeEl.value);
-    const wpm = Math.round((words / seconds) * 60) || 0;
-    showSummary(wpm, accuracy, seconds);
-    saveScore(wpm);
-    inputEl.disabled = true;
-  }
-}
-
-function getCorrectChars(actual, typed) {
-  let count = 0;
-  for (let i = 0; i < typed.length; i++) {
-    if (typed[i] === actual[i]) count++;
-  }
-  return count;
+  saveToLeaderboard(wpm);
+  finishSound.play();
+  summaryModal.classList.add("show");
 }
 
 function restartTest() {
-  loadQuote();
-}
-
-function showSummary(wpm, accuracy, seconds) {
-  document.getElementById("summaryTitle").innerText = "Test Summary";
-  document.getElementById("summaryContent").style.display = "block";
-  document.getElementById("leaderboard").style.display = "none";
-  document.getElementById("sumWpm").textContent = wpm;
-  document.getElementById("sumAccuracy").textContent = accuracy;
-  document.getElementById("sumTime").textContent = seconds;
-  document.getElementById("summaryModal").classList.add("show");
-}
-
-function closeModal() {
-  document.getElementById("summaryModal").classList.remove("show");
-}
-
-function saveScore(score) {
-  let scores = JSON.parse(localStorage.getItem("typingScores")) || [];
-  scores.push(score);
-  scores.sort((a, b) => b - a);
-  scores = scores.slice(0, 5);
-  localStorage.setItem("typingScores", JSON.stringify(scores));
+  location.reload();
 }
 
 function showLeaderboard() {
-  const scores = JSON.parse(localStorage.getItem("typingScores")) || [];
-  const list = document.getElementById("leaderboardList");
-  list.innerHTML = scores.map(score => `<li>${score} WPM</li>`).join('');
-  document.getElementById("summaryTitle").innerText = "🏆 Top 5 Scores";
-  document.getElementById("summaryContent").style.display = "none";
   document.getElementById("leaderboard").style.display = "block";
-  document.getElementById("summaryModal").classList.add("show");
+  const leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+  leaderboardList.innerHTML = leaderboard
+    .sort((a, b) => b.wpm - a.wpm)
+    .slice(0, 5)
+    .map(score => `<li>WPM: ${score.wpm}, Accuracy: ${score.accuracy}%</li>`)
+    .join("");
+  summaryModal.classList.add("show");
 }
 
-document.getElementById("toggleTheme").onclick = () => {
-  document.body.classList.toggle("dark");
-};
+function saveToLeaderboard(wpm) {
+  const correct = quoteDisplay.querySelectorAll(".highlight-green").length;
+  const total = currentQuote.length;
+  const accuracy = Math.round((correct / total) * 100);
+  const leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+  leaderboard.push({ wpm, accuracy });
+  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+}
 
-difficultyEl.onchange = modeEl.onchange = loadQuote;
-window.onload = loadQuote;
+inputBox.addEventListener("input", () => {
+  if (!isTestRunning) {
+    isTestRunning = true;
+    startTest();
+  }
+
+  const input = inputBox.value.split("");
+  const quoteSpans = quoteDisplay.querySelectorAll("span");
+  typedChars++;
+
+  quoteSpans.forEach((span, index) => {
+    if (!input[index]) {
+      span.classList.remove("highlight-green", "highlight-red");
+    } else if (input[index] === span.innerText) {
+      span.classList.add("highlight-green");
+      span.classList.remove("highlight-red");
+    } else {
+      span.classList.add("highlight-red");
+      span.classList.remove("highlight-green");
+    }
+  });
+
+  keypressSound.play();
+
+  const mode = modeSelect.value;
+  if (mode === "free" && inputBox.value === currentQuote) {
+    finishTest();
+  }
+});
+
+function closeWelcome() {
+  welcomeModal.classList.remove("show");
+  inputBox.disabled = false;
+  inputBox.focus();
+}
+
+function closeModal() {
+  summaryModal.classList.remove("show");
+}
+
+
+function preloadQuote() {
+  currentQuote = getRandomQuote();
+  displayQuote(currentQuote);
+}
+
+// Preload a quote on page load
+window.onload = preloadQuote;
