@@ -10,14 +10,14 @@ const quotes = {
     "Always type what you see.\nDon’t guess or skip words."
   ],
   medium: [
-    "Typing quickly can increase your efficiency.\nKeep practicing every day to get better.",
-    "Improve your focus while typing.\nIt will help you reduce mistakes.",
-    "Use proper hand placement.\nIt improves both speed and accuracy.",
-    "Stay calm and relaxed.\nTension leads to typing errors.",
-    "Keep your eyes on the screen.\nNot on the keyboard while typing.",
-    "Avoid unnecessary backspace.\nIt slows you down.",
-    "Typing with rhythm improves flow.\nUse short breaks wisely.",
-    "Typing skill is built slowly.\nBe patient and consistent."
+    "Consistent typing practice builds both speed and confidence.\nAvoid rushing, and focus on each keystroke.",
+    "Accuracy should always come before speed.\nA steady rhythm reduces mistakes over time.",
+    "Typing without looking at the keyboard trains muscle memory.\nThis is the key to true typing mastery.",
+    "Keep your posture straight and wrists relaxed.\nGood habits prevent strain during long typing sessions.",
+    "Learn to type in phrases rather than single words.\nIt helps maintain flow and improves efficiency.",
+    "Short breaks during practice sessions refresh your focus.\nA tired mind makes more mistakes.",
+    "Pay attention to punctuation while typing.\nIt sharpens precision and prepares you for real tasks.",
+    "Track your progress weekly.\nSmall improvements add up to big gains over months of practice."
   ],
   hard: [
     "Typing is not just about hitting keys on the keyboard. It's a cognitive skill that develops with practice. To type efficiently, one must learn proper finger placement and build muscle memory. Over time, speed and accuracy naturally improve.",
@@ -30,7 +30,6 @@ const quotes = {
     "Modern typing software includes features like WPM tracking, error analysis, and performance charts. These tools guide learners toward faster, more accurate typing."
   ]
 };
-
 
 const quoteDisplay = document.getElementById("quote");
 const inputBox = document.getElementById("input");
@@ -69,10 +68,7 @@ function displayQuote(quote) {
   });
 }
 
-
 function startTest() {
-  currentQuote = getRandomQuote();
-  displayQuote(currentQuote);
   inputBox.value = "";
   typedChars = 0;
 
@@ -193,11 +189,20 @@ function closeModal() {
   summaryModal.classList.remove("show");
 }
 
-
 function preloadQuote() {
   currentQuote = getRandomQuote();
   displayQuote(currentQuote);
 }
 
-// Preload a quote on page load
+// Dropdown change → new quote
+difficultySelect.addEventListener("change", () => {
+  preloadQuote();
+  inputBox.value = "";
+});
+modeSelect.addEventListener("change", () => {
+  preloadQuote();
+  inputBox.value = "";
+});
+
+// Preload on page load
 window.onload = preloadQuote;
